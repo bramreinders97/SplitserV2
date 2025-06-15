@@ -1,6 +1,15 @@
-// waggo/src/pages/AddExpense.jsx
 import { useState } from 'react'
 import { API_BASE } from '../config'
+import {
+  Box,
+  TextField,
+  Button,
+  Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from '@mui/material'
 
 export default function AddExpense() {
   const [payer, setPayer] = useState('Anne')
@@ -17,7 +26,7 @@ export default function AddExpense() {
       payer,
       amount: parseFloat(amount),
       description,
-      date: date.replace('T', ' ') + ':00',
+      date: date + ' 00:00:00',
     }
 
     try {
@@ -29,59 +38,89 @@ export default function AddExpense() {
 
       const result = await res.json()
       if (res.ok) {
-        setStatus('Success')
+        setStatus('success')
         setAmount('')
         setDescription('')
         setDate('')
       } else {
-        setStatus(result.error || 'Failed')
+        setStatus(result.error || 'error')
       }
     } catch (err) {
-      setStatus('Error')
+      setStatus('error')
     }
   }
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Add Expense</h1>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <label>
-          Payer:
-          <select value={payer} onChange={(e) => setPayer(e.target.value)}>
-            <option value="Anne">Anne</option>
-            <option value="Bram">Bram</option>
-          </select>
-        </label>
-        <label>
-          Amount (€):
-          <input
-            type="number"
-            step="0.01"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Description:
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </label>
-        <label>
-          Date:
-          <input
-            type="datetime-local"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
-      {status && <p>{status}</p>}
-    </div>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ maxWidth: 600, mx: 'auto', mt: 6, p: 4, bgcolor: 'background.paper', boxShadow: 3, borderRadius: 2 }}
+    >
+      <h1 style={{
+        textAlign: 'center',
+        marginBottom: '2rem',
+        color: '#2c3e50',
+        fontSize: '2.2rem',
+        fontWeight: 500,
+        fontFamily: 'Roboto, sans-serif',
+        borderBottom: '2px solid #ccc',
+        paddingBottom: '0.5rem'
+      }}>
+        Add Expense
+      </h1>
+
+      {status === 'success' && <Alert severity="success" sx={{ mb: 2 }}>Expense added successfully!</Alert>}
+      {status && status !== 'success' && <Alert severity="error" sx={{ mb: 2 }}>{status}</Alert>}
+
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel>Payer</InputLabel>
+        <Select
+          value={payer}
+          label="Payer"
+          onChange={(e) => setPayer(e.target.value)}
+        >
+          <MenuItem value="Anne">Anne</MenuItem>
+          <MenuItem value="Bram">Bram</MenuItem>
+        </Select>
+      </FormControl>
+
+      <TextField
+        fullWidth
+        label="Amount (€)"
+        type="number"
+        inputProps={{ step: '0.01' }}
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+        required
+        sx={{ mb: 2 }}
+      />
+
+      <TextField
+        fullWidth
+        label="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        sx={{ mb: 2 }}
+      />
+
+      <Box mt={2} mb={3}>
+        <TextField
+          label="Date"
+          type="date"
+          fullWidth
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+          required
+        />
+      </Box>
+
+      <Box mt={2}>
+        <Button variant="contained" type="submit" fullWidth>
+          Submit
+        </Button>
+      </Box>     
+
+    </Box>
   )
 }
