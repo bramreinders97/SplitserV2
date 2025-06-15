@@ -1,3 +1,15 @@
+# Block access to sensitive config file
 <Files ".config.php">
     Require all denied
 </Files>
+
+# Enable URL rewriting for clean endpoint paths
+RewriteEngine On
+RewriteBase /api/
+
+# Ignore existing files and directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Route all other requests to api.php
+RewriteRule ^ api.php [QSA,L]

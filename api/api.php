@@ -13,22 +13,23 @@ if (!in_array($_SERVER['REMOTE_ADDR'], $allowed_ips, true)) {
 $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-if ($method === 'GET' && $path === '/api/api.php/all_rides') {
+// Route matches for new /api/* structure
+if ($method === 'GET' && $path === '/api/all_rides') {
     require __DIR__ . '/routes/get_all_rides.php';
     exit;
 }
 
-if ($method === 'POST' && $path === '/api/api.php/add_ride') {
+if ($method === 'POST' && $path === '/api/add_ride') {
     require __DIR__ . '/routes/post_add_ride.php';
     exit;
 }
 
-if ($method === 'GET' && $path === '/api/api.php/all_expenses') {
+if ($method === 'GET' && $path === '/api/all_expenses') {
     require __DIR__ . '/routes/get_all_expenses.php';
     exit;
 }
 
-if ($method === 'POST' && $path === '/api/api.php/add_expense') {
+if ($method === 'POST' && $path === '/api/add_expense') {
     require __DIR__ . '/routes/post_add_expense.php';
     exit;
 }
