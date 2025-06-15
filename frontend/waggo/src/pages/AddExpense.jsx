@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 
 export default function AddExpense() {
-  const [payer, setPayer] = useState('Anne')
+  const [payer, setPayer] = useState('')
   const [amount, setAmount] = useState('')
   const [description, setDescription] = useState('')
   const [date, setDate] = useState('')
@@ -72,13 +72,16 @@ export default function AddExpense() {
       {status === 'success' && <Alert severity="success" sx={{ mb: 2 }}>Expense added successfully!</Alert>}
       {status && status !== 'success' && <Alert severity="error" sx={{ mb: 2 }}>{status}</Alert>}
 
-      <FormControl fullWidth sx={{ mb: 2 }}>
+      <FormControl fullWidth required sx={{ mb: 2 }}>
         <InputLabel>Payer</InputLabel>
         <Select
           value={payer}
           label="Payer"
           onChange={(e) => setPayer(e.target.value)}
         >
+          <MenuItem value="" disabled>
+            Select a payer
+          </MenuItem>
           <MenuItem value="Anne">Anne</MenuItem>
           <MenuItem value="Bram">Bram</MenuItem>
         </Select>
