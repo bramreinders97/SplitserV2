@@ -2,7 +2,7 @@
 ## Development Server
 From the /frontend/ directory:
 
-```docker-compose up```
+```docker-compose up --build -d```
 
 Visit: http://localhost:5173
 

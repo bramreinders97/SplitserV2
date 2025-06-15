@@ -3,9 +3,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY waggo/package*.json ./
 RUN npm install
 
-COPY . .
+COPY waggo .
 
 CMD ["npm", "run", "dev"]

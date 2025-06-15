@@ -6,7 +6,7 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - .:/app
+      - ./waggo:/app
       - /app/node_modules
     environment:
       - HOST=0.0.0.0
