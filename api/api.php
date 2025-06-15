@@ -23,5 +23,15 @@ if ($method === 'POST' && $path === '/api/api.php/add_ride') {
     exit;
 }
 
+if ($method === 'GET' && $path === '/api/api.php/all_expenses') {
+    require __DIR__ . '/routes/get_all_expenses.php';
+    exit;
+}
+
+if ($method === 'POST' && $path === '/api/api.php/add_expense') {
+    require __DIR__ . '/routes/post_add_expense.php';
+    exit;
+}
+
 http_response_code(404);
 echo json_encode(['error' => 'Endpoint not found']);
