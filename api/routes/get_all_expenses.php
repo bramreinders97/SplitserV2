@@ -1,6 +1,6 @@
 <?php
 $conn = include(__DIR__ . '/../db.php');
-$result = $conn->query("SELECT * FROM v2_expenses ORDER BY date DESC");
+$result = $conn->query("SELECT * FROM v2_expenses ORDER BY id");
 if (!$result) {
     http_response_code(500);
     echo json_encode(['error' => 'Query failed']);
