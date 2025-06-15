@@ -1,6 +1,15 @@
 <?php
 header('Content-Type: application/json');
 
+$config = include(__DIR__ . '/.config.php');
+$allowed_ips = $config['allowed_ips'] ?? [];
+
+if (!in_array($_SERVER['REMOTE_ADDR'], $allowed_ips, true)) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Forbidden']);
+    exit;
+}
+
 $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
