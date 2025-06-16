@@ -1,30 +1,35 @@
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import { Typography, Button, Box, Stack, Paper } from '@mui/material';
 
 export default function App() {
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Waggo
-          </Typography>
-          <Button color="inherit" component={Link} to="/add-ride">
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f5f5f5',
+        padding: 4,
+      }}
+    >
+      <Paper elevation={3} sx={{ padding: 4, textAlign: 'center' }}>
+        <Typography variant="h4" gutterBottom>
+          Waggo
+        </Typography>
+        <Stack spacing={2}>
+          <Button variant="contained" component={Link} to="/add-ride">
             Add Ride
           </Button>
-          <Button color="inherit" component={Link} to="/add-expense">
+          <Button variant="contained" component={Link} to="/add-expense">
             Add Expense
           </Button>
-          <Button color="inherit" component={Link} to="/unexported">
+          <Button variant="contained" component={Link} to="/unexported">
             Unexported
           </Button>
-        </Toolbar>
-      </AppBar>
-      <Box sx={{ mt: 4 }}>
-        <Typography align="center" variant="h5">
-          Select an option above.
-        </Typography>
-      </Box>
-    </>
+        </Stack>
+      </Paper>
+    </Box>
   );
 }
