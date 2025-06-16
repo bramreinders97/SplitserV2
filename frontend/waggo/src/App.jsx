@@ -26,7 +26,7 @@ export default function App() {
             Add Expense
           </Button>
           <Button variant="contained" component={Link} to="/unexported">
-            Unexported
+            Show Unexported
           </Button>
         </Stack>
       </Paper>
