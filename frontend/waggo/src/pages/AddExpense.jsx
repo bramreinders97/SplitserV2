@@ -10,6 +10,7 @@ import {
   Select,
   MenuItem
 } from '@mui/material'
+import Header from '../components/Header';
 
 export default function AddExpense() {
   const [payer, setPayer] = useState('')
@@ -51,6 +52,8 @@ export default function AddExpense() {
   }
 
   return (
+    <>
+    <Header />
     <Box
       component="form"
       onSubmit={handleSubmit}
@@ -125,5 +128,6 @@ export default function AddExpense() {
       </Box>     
 
     </Box>
+    </>
   )
 }

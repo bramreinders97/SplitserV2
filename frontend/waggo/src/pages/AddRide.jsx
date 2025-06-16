@@ -10,6 +10,8 @@ import {
   Alert,
 } from '@mui/material';
 import { API_BASE } from '../config';
+import Header from '../components/Header';
+
 
 export default function AddRide() {
   const [driver, setDriver] = useState('');
@@ -48,6 +50,8 @@ export default function AddRide() {
   };
 
   return (
+    <>
+    <Header />
     <Box sx={{ maxWidth: 500, margin: 'auto', padding: '2rem' }}>
       {status && (
         <Alert severity={status.type} sx={{ mb: 3 }}>
@@ -120,5 +124,6 @@ export default function AddRide() {
         </Box>
       </form>
     </Box>
+    </>
   );
 }

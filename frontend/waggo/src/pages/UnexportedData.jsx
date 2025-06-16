@@ -10,6 +10,7 @@ import {
   Paper
 } from '@mui/material';
 import { API_BASE } from '../config';
+import Header from '../components/Header';
 
 export default function UnexportedData() {
   const [rides, setRides] = useState([]);
@@ -42,62 +43,65 @@ export default function UnexportedData() {
   );
 
   return (
-    <Box sx={{ padding: '2rem' }}>
-      <Typography variant="h4" gutterBottom>
-        Unexported Rides
-      </Typography>
-      <Paper sx={{ mb: 4 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Driver</TableCell>
-              <TableCell>Distance (km)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rides.map((ride) => (
-              <TableRow key={ride.id}>
-                <TableCell>{ride.date}</TableCell>
-                <TableCell>{ride.driver}</TableCell>
-                <TableCell>{ride.distance}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
-      <Typography variant="h6" sx={{ mb: 4 }}>
-        Total KM — Anne: {totalKm.Anne.toFixed(1)} km, Bram: {totalKm.Bram.toFixed(1)} km
-      </Typography>
+    <>
+        <Header />
+            <Box sx={{ padding: '2rem' }}>
+            <Typography variant="h4" gutterBottom>
+                Unexported Rides
+            </Typography>
+            <Paper sx={{ mb: 4 }}>
+                <Table>
+                <TableHead>
+                    <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Driver</TableCell>
+                    <TableCell>Distance (km)</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {rides.map((ride) => (
+                    <TableRow key={ride.id}>
+                        <TableCell>{ride.date}</TableCell>
+                        <TableCell>{ride.driver}</TableCell>
+                        <TableCell>{ride.distance}</TableCell>
+                    </TableRow>
+                    ))}
+                </TableBody>
+                </Table>
+            </Paper>
+            <Typography variant="h6" sx={{ mb: 4 }}>
+                Total KM — Anne: {totalKm.Anne.toFixed(1)} km, Bram: {totalKm.Bram.toFixed(1)} km
+            </Typography>
 
-      <Typography variant="h4" gutterBottom>
-        Unexported Expenses
-      </Typography>
-      <Paper>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Payer</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Amount (€)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {expenses.map((exp) => (
-              <TableRow key={exp.id}>
-                <TableCell>{exp.date}</TableCell>
-                <TableCell>{exp.payer}</TableCell>
-                <TableCell>{exp.description}</TableCell>
-                <TableCell>{parseFloat(exp.amount).toFixed(2)}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
-      <Typography variant="h6" sx={{ mt: 4 }}>
-        Total Expenses — Anne: €{totalExpenses.Anne.toFixed(2)}, Bram: €{totalExpenses.Bram.toFixed(2)}
-      </Typography>
-    </Box>
+            <Typography variant="h4" gutterBottom>
+                Unexported Expenses
+            </Typography>
+            <Paper>
+                <Table>
+                <TableHead>
+                    <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Payer</TableCell>
+                    <TableCell>Description</TableCell>
+                    <TableCell>Amount (€)</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {expenses.map((exp) => (
+                    <TableRow key={exp.id}>
+                        <TableCell>{exp.date}</TableCell>
+                        <TableCell>{exp.payer}</TableCell>
+                        <TableCell>{exp.description}</TableCell>
+                        <TableCell>{parseFloat(exp.amount).toFixed(2)}</TableCell>
+                    </TableRow>
+                    ))}
+                </TableBody>
+                </Table>
+            </Paper>
+            <Typography variant="h6" sx={{ mt: 4 }}>
+                Total Expenses — Anne: €{totalExpenses.Anne.toFixed(2)}, Bram: €{totalExpenses.Bram.toFixed(2)}
+            </Typography>
+            </Box>
+    </>
   );
 }
