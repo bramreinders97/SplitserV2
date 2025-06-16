@@ -1,21 +1,30 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 
-function App() {
+export default function App() {
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>Waggo</h1>
-      <nav style={{ marginTop: '1rem' }}>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          <li style={{ marginBottom: '0.5rem' }}>
-            <Link to="/add-ride">Add Ride</Link>
-          </li>
-          <li>
-            <Link to="/add-expense">Add Expense</Link>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  )
+    <>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Waggo
+          </Typography>
+          <Button color="inherit" component={Link} to="/add-ride">
+            Add Ride
+          </Button>
+          <Button color="inherit" component={Link} to="/add-expense">
+            Add Expense
+          </Button>
+          <Button color="inherit" component={Link} to="/unexported">
+            Unexported
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Box sx={{ mt: 4 }}>
+        <Typography align="center" variant="h5">
+          Select an option above.
+        </Typography>
+      </Box>
+    </>
+  );
 }
-
-export default App
