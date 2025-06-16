@@ -3,13 +3,19 @@
     Require all denied
 </Files>
 
-# Enable URL rewriting for clean endpoint paths
-RewriteEngine On
-RewriteBase /api/
+<IfModule mod_rewrite.c>
+  RewriteEngine On
 
-# Ignore existing files and directories
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+  # Redirect to HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Route all other requests to api.php
-RewriteRule ^ api.php [QSA,L]
+  RewriteBase /api/
+
+  # Ignore existing files and directories
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  # Route all other requests to api.php
+  RewriteRule ^ api.php [QSA,L]
+</IfModule>
