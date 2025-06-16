@@ -1,10 +1,23 @@
 <?php
+// Allow CORS preflight from Docker dev (localhost)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header("Access-Control-Allow-Origin: http://localhost:5173");
+    header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type");
+    http_response_code(204);
+    exit;
+}
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
 header('Content-Type: application/json');
 
 $config = include(__DIR__ . '/.config.php');
 $allowed_ips = $config['allowed_ips'] ?? [];
 
-if (!in_array($_SERVER['REMOTE_ADDR'], $allowed_ips, true)) {
+if (
+    $_SERVER['REQUEST_METHOD'] !== 'OPTIONS' &&
+    !in_array($_SERVER['REMOTE_ADDR'], $allowed_ips, true)
+) {
     http_response_code(403);
     echo json_encode(['error' => 'Forbidden']);
     exit;
