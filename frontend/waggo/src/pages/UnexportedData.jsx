@@ -7,14 +7,29 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  TableSortLabel
 } from '@mui/material';
 import { API_BASE } from '../config';
 import Header from '../components/Header';
 
+function sortData(array, orderBy, order, isNumeric = false) {
+  return [...array].sort((a, b) => {
+    const valA = isNumeric ? parseFloat(a[orderBy]) : a[orderBy];
+    const valB = isNumeric ? parseFloat(b[orderBy]) : b[orderBy];
+
+    if (valA < valB) return order === 'asc' ? -1 : 1;
+    if (valA > valB) return order === 'asc' ? 1 : -1;
+    return 0;
+  });
+}
+
 export default function UnexportedData() {
   const [rides, setRides] = useState([]);
   const [expenses, setExpenses] = useState([]);
+
+  const [rideSort, setRideSort] = useState({ orderBy: 'date', order: 'asc' });
+  const [expenseSort, setExpenseSort] = useState({ orderBy: 'date', order: 'asc' });
 
   useEffect(() => {
     fetch(`${API_BASE}/all_rides`)
@@ -42,6 +57,19 @@ export default function UnexportedData() {
     { Anne: 0, Bram: 0 }
   );
 
+  const handleRideSort = (property) => {
+    const isAsc = rideSort.orderBy === property && rideSort.order === 'asc';
+    setRideSort({ orderBy: property, order: isAsc ? 'desc' : 'asc' });
+  };
+
+  const handleExpenseSort = (property) => {
+    const isAsc = expenseSort.orderBy === property && expenseSort.order === 'asc';
+    setExpenseSort({ orderBy: property, order: isAsc ? 'desc' : 'asc' });
+  };
+
+  const sortedRides = sortData(rides, rideSort.orderBy, rideSort.order, rideSort.orderBy === 'distance');
+  const sortedExpenses = sortData(expenses, expenseSort.orderBy, expenseSort.order, expenseSort.orderBy === 'amount');
+
   return (
     <>
       <Header />
@@ -53,14 +81,21 @@ export default function UnexportedData() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Driver</TableCell>
-                <TableCell>Distance (km)</TableCell>
-                <TableCell>Description</TableCell>
+                {['date', 'driver', 'distance', 'description'].map((key) => (
+                  <TableCell key={key}>
+                    <TableSortLabel
+                      active={rideSort.orderBy === key}
+                      direction={rideSort.orderBy === key ? rideSort.order : 'asc'}
+                      onClick={() => handleRideSort(key)}
+                    >
+                      {key.charAt(0).toUpperCase() + key.slice(1)}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {rides.map((ride) => (
+              {sortedRides.map((ride) => (
                 <TableRow key={ride.id}>
                   <TableCell>{ride.date}</TableCell>
                   <TableCell>{ride.driver}</TableCell>
@@ -82,14 +117,21 @@ export default function UnexportedData() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Payer</TableCell>
-                <TableCell>Amount (€)</TableCell>
-                <TableCell>Description</TableCell>
+                {['date', 'payer', 'amount', 'description'].map((key) => (
+                  <TableCell key={key}>
+                    <TableSortLabel
+                      active={expenseSort.orderBy === key}
+                      direction={expenseSort.orderBy === key ? expenseSort.order : 'asc'}
+                      onClick={() => handleExpenseSort(key)}
+                    >
+                      {key.charAt(0).toUpperCase() + key.slice(1)}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {expenses.map((exp) => (
+              {sortedExpenses.map((exp) => (
                 <TableRow key={exp.id}>
                   <TableCell>{exp.date}</TableCell>
                   <TableCell>{exp.payer}</TableCell>
