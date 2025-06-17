@@ -1,12 +1,15 @@
 <?php
 header('Content-Type: application/json');
 
+$config = include(__DIR__ . '/.config.php');
+$allowed_ips = $config['allowed_ips'] ?? [];
+$allowed_origins = $config['allowed_origins'] ?? [];
+
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $referer = $_SERVER['HTTP_REFERER'] ?? '';
-$hostMatches = str_contains($origin, 'https://amsterbram.eu') || str_contains($referer, 'https://amsterbram.eu');
 
-if ($hostMatches) {
-    header("Access-Control-Allow-Origin: https://amsterbram.eu");
+if (in_array($origin, $allowed_origins, true)) {
+    header("Access-Control-Allow-Origin: $origin");
     header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type");
 }
@@ -16,8 +19,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-$config = include(__DIR__ . '/.config.php');
-$allowed_ips = $config['allowed_ips'] ?? [];
+$hostMatches = false;
+foreach ($allowed_origins as $o) {
+    if (str_contains($origin, $o) || str_contains($referer, $o)) {
+        $hostMatches = true;
+        break;
+    }
+}
 
 if (
     !in_array($_SERVER['REMOTE_ADDR'], $allowed_ips, true) &&
