@@ -8,15 +8,17 @@ if (
     !isset($input['distance']) ||
     !is_numeric($input['distance']) ||
     !isset($input['date']) ||
-    !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $input['date'])
+    !preg_match('/^\d{4}-\d{2}-\d{2}$/', $input['date']) // Date only, no time
 ) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid input']);
     exit;
 }
 
-$stmt = $conn->prepare("INSERT INTO v2_rides (driver, distance, date) VALUES (?, ?, ?)");
-$stmt->bind_param("sds", $input['driver'], $input['distance'], $input['date']);
+$description = isset($input['description']) ? $input['description'] : null;
+
+$stmt = $conn->prepare("INSERT INTO v2_rides (driver, distance, date, description) VALUES (?, ?, ?, ?)");
+$stmt->bind_param("sdss", $input['driver'], $input['distance'], $input['date'], $description);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true, 'id' => $stmt->insert_id]);

@@ -27,7 +27,7 @@ export default function AddExpense() {
       payer,
       amount: parseFloat(amount),
       description,
-      date: date + ' 00:00:00',
+      date: date,
     }
 
     try {
@@ -125,7 +125,7 @@ export default function AddExpense() {
         <Button variant="contained" type="submit" fullWidth>
           Submit
         </Button>
-      </Box>     
+      </Box>
 
     </Box>
     </>
