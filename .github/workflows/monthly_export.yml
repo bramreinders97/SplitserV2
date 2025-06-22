@@ -42,7 +42,8 @@ jobs:
         echo "SPLITWISE_ACCESS_TOKEN_SECRET=${{ secrets.SPLITWISE_ACCESS_TOKEN_SECRET }}" >> $GITHUB_ENV
         echo "SPLITWISE_USER_ID_BRAM=${{ secrets.SPLITWISE_USER_ID_BRAM }}" >> $GITHUB_ENV
         echo "BASE_URL=${{ secrets.BASE_URL }}" >> $GITHUB_ENV
-        
+        echo "API_ACCESS_TOKEN=${{ secrets.API_ACCESS_TOKEN }}" >> $GITHUB_ENV
+
         # Set conditional environment variables based on trigger type
         if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
           # Manual trigger - use TEST values

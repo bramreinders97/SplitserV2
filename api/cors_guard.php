@@ -27,9 +27,13 @@ foreach ($allowed_origins as $o) {
     }
 }
 
+$token = $_SERVER['HTTP_X_ACCESS_TOKEN'] ?? '';
+$valid_token = in_array($token, $config['access_tokens'] ?? [], true);
+
 if (
     !in_array($_SERVER['REMOTE_ADDR'], $allowed_ips, true) &&
-    !$hostMatches
+    !$hostMatches &&
+    !$valid_token
 ) {
     http_response_code(403);
     echo json_encode(['error' => 'Forbidden']);

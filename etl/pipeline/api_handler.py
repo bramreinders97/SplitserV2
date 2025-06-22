@@ -4,7 +4,7 @@ import logging
 from typing import Any
 
 import requests
-from constants import BASE_URL
+from constants import API_ACCESS_TOKEN, BASE_URL
 
 logging.basicConfig(level=logging.INFO)
 
@@ -21,6 +21,9 @@ def perform_request(method: str, endpoint: str, **kwargs: Any) -> dict:
         dict: Parsed JSON response, or empty dict on error.
     """
     url = f"{BASE_URL}/{endpoint}"
+    headers = kwargs.pop("headers", {})
+    headers["X-Access-Token"] = API_ACCESS_TOKEN
+
     try:
         logging.info(f"{method.upper()} request to {endpoint}")
         response = requests.request(method, url, timeout=10, **kwargs)
