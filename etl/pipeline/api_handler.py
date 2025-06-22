@@ -26,7 +26,7 @@ def perform_request(method: str, endpoint: str, **kwargs: Any) -> dict:
 
     try:
         logging.info(f"{method.upper()} request to {endpoint}")
-        response = requests.request(method, url, timeout=10, **kwargs)
+        response = requests.request(method, url, headers=headers, timeout=10, **kwargs)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
