@@ -67,8 +67,8 @@ def _determine_transfer(balances: Dict[str, float]) -> Tuple[str, str, float]:
     Transfers only half the difference, as that suffices to balance both parties.
 
     Returns:
-        payer (str): person who must send money
-        receiver (str): person who must receive money
+        debtor (str): person who must send money
+        creditor (str): person who must receive money
         amount (float): amount to transfer to balance accounts (always positive)
     """
     bram_balance = balances.get("Bram", 0.0)
@@ -81,8 +81,17 @@ def _determine_transfer(balances: Dict[str, float]) -> Tuple[str, str, float]:
     else:
         return "Bram", "Anne", abs(difference)
 
-def _create_description_message(km: Dict[str, float], expenses: Dict[str, float], balances: Dict[str, float], payer: str, receiver: str, amount: float) -> str:
-    """Constructs a detailed textual summary of the financial computation.
+
+def _create_description_message(
+    km: Dict[str, float],
+    expenses: Dict[str, float],
+    balances: Dict[str, float],
+    debtor: str,
+    creditor: str,
+    amount: float
+) -> str:
+    """
+    Constructs a detailed textual summary of the financial computation.
 
     Includes:
     - Total kilometers and total expenses
@@ -94,8 +103,8 @@ def _create_description_message(km: Dict[str, float], expenses: Dict[str, float]
         km: Dictionary of kilometers driven per person
         expenses: Dictionary of amounts paid per person
         balances: Dictionary of financial balances per person
-        payer: Name of the person who must transfer money
-        receiver: Name of the person receiving the transfer
+        debtor: Name of the person who must transfer money
+        creditor: Name of the person receiving the transfer
         amount: Exact amount to be transferred
 
     Returns:
@@ -122,12 +131,14 @@ def _create_description_message(km: Dict[str, float], expenses: Dict[str, float]
         f"Cost per km: €{round(cost_per_km, 4)}",
         f"Bram drove {bram_km} km, should pay €{round(bram_should_pay, 2)}, paid €{round(bram_paid, 2)}, balance €{bram_balance}",
         f"Anne drove {anne_km} km, should pay €{round(anne_should_pay, 2)}, paid €{round(anne_paid, 2)}, balance €{anne_balance}",
-        f"Transfer required: {payer} → {receiver} €{amount}" if amount > 0 else "No transfer needed"
+        f"Transfer required: {debtor} → {creditor} €{amount}" if amount > 0 else "No transfer needed"
     ]
     return "\n".join(desc_lines)
 
+
 def transform_data(
-        all_rides: List[Dict], all_expenses: List[Dict]
+    all_rides: List[Dict],
+    all_expenses: List[Dict]
 ) -> Dict[str, object]:
     """
     Orchestrates the transformation pipeline.
@@ -148,14 +159,14 @@ def transform_data(
     km = _compute_kilometers(unexported_rides)
     expenses = _compute_expenses(unexported_expenses)
     balances = _compute_balances(km, expenses)
-    payer, receiver, amount = _determine_transfer(balances)
+    debtor, creditor, amount = _determine_transfer(balances)
 
     should_export = amount > 0.0
 
     return {
         "balance_to_export": should_export,
-        "payer": payer if should_export else None,
-        "receiver": receiver if should_export else None,
+        "payer": debtor if should_export else None,
+        "receiver": creditor if should_export else None,
         "amount": amount if should_export else 0.0,
-        "description": _create_description_message(km, expenses, balances, payer, receiver, amount) if should_export else None
+        "description": _create_description_message(km, expenses, balances, debtor, creditor, amount) if should_export else None
     }
