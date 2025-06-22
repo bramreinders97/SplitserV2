@@ -101,7 +101,7 @@ def build_expense(group_id: int, amount: float, description: str, creditor_id: i
     expense.setUsers([payer_user, receiver_user])
     return expense
 
-def post_balance_to_splitwise(balance_result: Dict[str, Union[float, str]], splitwise: Splitwise) -> None:
+def post_balance_to_splitwise(balance_result: Dict[str, Union[float, str]], splitwise: Splitwise) -> bool:
     """
     Posts a financial balance as a Splitwise expense based on input data.
 
@@ -113,6 +113,9 @@ def post_balance_to_splitwise(balance_result: Dict[str, Union[float, str]], spli
             - 'description': (optional) description of the transaction
             - 'balance_to_export': bool value indicating whether export is desired
         splitwise (Splitwise): Authenticated Splitwise client
+
+    Returns:
+        bool: Whether the balance is successfully exported.
     """
     if not balance_result.get("balance_to_export"):
         logging.info("No balance to export.")
@@ -134,7 +137,10 @@ def post_balance_to_splitwise(balance_result: Dict[str, Union[float, str]], spli
     try:
         splitwise.createExpense(expense)
         logging.info("Expense posted successfully to Splitwise.")
+        return True
     except SplitwiseException as e:
         logging.error(f"Splitwise API error: {e}")
+        return False
     except Exception as e:
         logging.exception(f"Unexpected error occurred while posting expense: {e}")
+        return False

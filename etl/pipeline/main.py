@@ -1,6 +1,6 @@
 from transform import transform_data
 from load import get_authenticated_splitwise, post_balance_to_splitwise
-from extract import fetch_all_rides, fetch_all_expenses
+from api_handler import fetch_all_rides, fetch_all_expenses, mark_all_exported
 import logging
 
 
@@ -24,6 +24,7 @@ print(balance_result)
 
 if balance_result.get("balance_to_export"):
     splitwise = get_authenticated_splitwise()
-    post_balance_to_splitwise(balance_result, splitwise)
+    if post_balance_to_splitwise(balance_result, splitwise):
+        mark_all_exported()
 else:
     logging.info("No balance to export.")
