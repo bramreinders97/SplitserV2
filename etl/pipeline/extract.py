@@ -1,18 +1,23 @@
 import requests
+import logging
 
+logging.basicConfig(level=logging.INFO)
 BASE_URL = "https://amsterbram.eu/api"
 
 def fetch_endpoint(endpoint: str) -> list:
     url = f"{BASE_URL}/{endpoint}"
     try:
+        logging.info(f"Fetching data from {endpoint}")
         response = requests.get(url, timeout=10)
         response.raise_for_status()
-        return response.json()
+        data = response.json()
+        logging.info(f"Successfully fetched {len(data)} items from {endpoint}")
+        return data
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching {url}: {e}")
+        logging.error(f"Error fetching {url}: {e}")
         return []
     except ValueError:
-        print(f"Invalid JSON received from {url}")
+        logging.error(f"Invalid JSON received from {url}")
         return []
 
 def fetch_all_expenses() -> list:

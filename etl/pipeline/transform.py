@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple, Optional, Union
 
 
 def _filter_unexported(entries: List[Dict]) -> List[Dict]:
@@ -139,7 +139,7 @@ def _create_description_message(
 def transform_data(
     all_rides: List[Dict],
     all_expenses: List[Dict]
-) -> Dict[str, object]:
+) -> Dict[str, Union[str, float]]:
     """
     Orchestrates the transformation pipeline.
     Returns a dictionary with transfer info, export flag, and description.
