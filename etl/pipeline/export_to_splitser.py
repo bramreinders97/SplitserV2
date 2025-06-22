@@ -1,39 +1,45 @@
+"""Code for exporting financial balance to Splitwise."""
+
 import logging
 from typing import Dict, Union
-from splitwise import Splitwise
-from splitwise.expense import Expense, ExpenseUser as User
-from splitwise.exception import SplitwiseException
+
 from constants import (
-    SPLITWISE_CONSUMER_KEY,
-    SPLITWISE_CONSUMER_SECRET,
     SPLITWISE_ACCESS_TOKEN,
     SPLITWISE_ACCESS_TOKEN_SECRET,
+    SPLITWISE_CONSUMER_KEY,
+    SPLITWISE_CONSUMER_SECRET,
     SPLITWISE_GROUP_ID,
-    SPLITWISE_USER_ID_BRAM,
     SPLITWISE_USER_ID_ANNE,
+    SPLITWISE_USER_ID_BRAM,
 )
+from splitwise import Splitwise
+from splitwise.exception import SplitwiseException
+from splitwise.expense import Expense
+from splitwise.expense import ExpenseUser as User
 
 logging.basicConfig(level=logging.INFO)
 
+
 def get_authenticated_splitwise() -> Splitwise:
-    """
-    Authenticates and returns a Splitwise client using OAuth credentials.
+    """Authenticates and returns a Splitwise client using OAuth credentials.
 
     Returns:
         Splitwise: Authenticated Splitwise API client
     """
     logging.info("Setting up Splitwise API client...")
     client = Splitwise(SPLITWISE_CONSUMER_KEY, SPLITWISE_CONSUMER_SECRET)
-    client.setAccessToken({
-        "oauth_token": SPLITWISE_ACCESS_TOKEN,
-        "oauth_token_secret": SPLITWISE_ACCESS_TOKEN_SECRET
-    })
+    client.setAccessToken(
+        {
+            "oauth_token": SPLITWISE_ACCESS_TOKEN,
+            "oauth_token_secret": SPLITWISE_ACCESS_TOKEN_SECRET,
+        }
+    )
     logging.info("Splitwise client authenticated.")
     return client
 
+
 def validate_balance_data(balance_result: Dict[str, Union[float, str]]) -> None:
-    """
-    Validates the balance_result dictionary for required keys and expected values.
+    """Validates the balance_result dictionary for required keys and expected values.
 
     Args:
         balance_result (Dict[str, Union[float, str]]): Dictionary containing balance transfer data
@@ -51,9 +57,9 @@ def validate_balance_data(balance_result: Dict[str, Union[float, str]]) -> None:
     if balance_result.get("amount", 0) <= 0:
         raise ValueError("Amount must be positive")
 
+
 def resolve_user_ids(payer: str, receiver: str) -> Dict[str, int]:
-    """
-    Maps the given payer and receiver names to their corresponding Splitwise user IDs.
+    """Maps the given payer and receiver names to their corresponding Splitwise user IDs.
 
     Args:
         payer (str): Name of the user who owes money
@@ -64,13 +70,23 @@ def resolve_user_ids(payer: str, receiver: str) -> Dict[str, int]:
     """
     logging.info(f"Resolving user IDs for {payer} and {receiver}")
     return {
-        "debtor_id": int(SPLITWISE_USER_ID_BRAM) if payer == "Bram" else int(SPLITWISE_USER_ID_ANNE),
-        "creditor_id": int(SPLITWISE_USER_ID_BRAM) if receiver == "Bram" else int(SPLITWISE_USER_ID_ANNE)
+        "debtor_id": (
+            int(SPLITWISE_USER_ID_BRAM)
+            if payer == "Bram"
+            else int(SPLITWISE_USER_ID_ANNE)
+        ),
+        "creditor_id": (
+            int(SPLITWISE_USER_ID_BRAM)
+            if receiver == "Bram"
+            else int(SPLITWISE_USER_ID_ANNE)
+        ),
     }
 
-def build_expense(group_id: int, amount: float, description: str, creditor_id: int, debtor_id: int) -> Expense:
-    """
-    Constructs a Splitwise Expense object representing a debt from debtor to creditor.
+
+def build_expense(
+    group_id: int, amount: float, description: str, creditor_id: int, debtor_id: int
+) -> Expense:
+    """Constructs a Splitwise Expense object representing a debt from debtor to creditor.
 
     Args:
         group_id (int): ID of the Splitwise group
@@ -82,7 +98,7 @@ def build_expense(group_id: int, amount: float, description: str, creditor_id: i
     Returns:
         Expense: Configured Splitwise expense object
     """
-    logging.info(f"Building expense...")
+    logging.info("Building expense...")
     expense = Expense()
     expense.setCost(str(amount))
     expense.setDescription(description)
@@ -101,9 +117,11 @@ def build_expense(group_id: int, amount: float, description: str, creditor_id: i
     expense.setUsers([payer_user, receiver_user])
     return expense
 
-def post_balance_to_splitwise(balance_result: Dict[str, Union[float, str]], splitwise: Splitwise) -> bool:
-    """
-    Posts a financial balance as a Splitwise expense based on input data.
+
+def post_balance_to_splitwise(
+    balance_result: Dict[str, Union[float, str]], splitwise: Splitwise
+) -> bool:
+    """Posts a financial balance as a Splitwise expense based on input data.
 
     Args:
         balance_result (Dict[str, Union[float, str]]): Dictionary from transform_data() containing:
@@ -130,7 +148,9 @@ def post_balance_to_splitwise(balance_result: Dict[str, Union[float, str]], spli
     group_id = int(SPLITWISE_GROUP_ID)
 
     ids = resolve_user_ids(payer, receiver)
-    expense = build_expense(group_id, amount, description, ids["creditor_id"], ids["debtor_id"])
+    expense = build_expense(
+        group_id, amount, description, ids["creditor_id"], ids["debtor_id"]
+    )
 
     logging.info(f"Posting expense: {payer} owes €{amount} to {receiver}")
 
