@@ -1,6 +1,7 @@
 """Code to transform raw input to financial balance."""
 
 from collections import defaultdict
+from datetime import date
 from typing import Dict, List, Optional, Tuple, Union
 
 
@@ -126,6 +127,7 @@ def _create_description_message(
     anne_balance = balances["Anne"]
 
     desc_lines = [
+        f"Export {date.today():%B} {date.today().day}",
         f"Total kilometers: {total_km}",
         f"Total expenses: €{round(total_exp, 2)}",
         f"Cost per km: €{round(cost_per_km, 4)}",
@@ -142,7 +144,7 @@ def _create_description_message(
 
 def transform_data(
     all_rides: List[Dict], all_expenses: List[Dict]
-) -> Dict[str, Union[str, float]]:
+) -> Dict[str, Union[bool, float, str, None]]:
     """Orchestrates the transformation pipeline.
 
     Returns a dictionary with transfer info, export flag, and description.
