@@ -1,5 +1,5 @@
 from transform import transform_data
-from load import get_authenticated_splitwise, post_balance_to_splitwise
+from export_to_splitser import get_authenticated_splitwise, post_balance_to_splitwise
 from api_handler import fetch_all_rides, fetch_all_expenses, mark_all_exported
 import logging
 
