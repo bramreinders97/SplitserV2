@@ -24,5 +24,10 @@ if ($method === 'POST' && $path === '/api/add_expense') {
     exit;
 }
 
+if ($method === 'POST' && $path === '/api/mark_exported') {
+    require __DIR__ . '/routes/post_mark_exported.php';
+    exit;
+}
+
 http_response_code(404);
 echo json_encode(['error' => 'Endpoint not found']);
