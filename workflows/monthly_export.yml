@@ -1,0 +1,65 @@
+name: Monthly Export Pipeline
+
+on:
+  schedule:
+    # Run at 3 AM on the first day of every month
+    - cron: '0 3 1 * *'
+  workflow_dispatch:
+    # Allow manual triggering
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+        
+    - name: Load cached venv
+      id: cached-poetry-dependencies
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+        
+    - name: Install dependencies
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      run: poetry install --no-interaction --no-root
+      
+    - name: Set environment variables
+      run: |
+        # Set base environment variables
+        echo "SPLITWISE_CONSUMER_KEY=${{ secrets.SPLITWISE_CONSUMER_KEY }}" >> $GITHUB_ENV
+        echo "SPLITWISE_CONSUMER_SECRET=${{ secrets.SPLITWISE_CONSUMER_SECRET }}" >> $GITHUB_ENV
+        echo "SPLITWISE_ACCESS_TOKEN=${{ secrets.SPLITWISE_ACCESS_TOKEN }}" >> $GITHUB_ENV
+        echo "SPLITWISE_ACCESS_TOKEN_SECRET=${{ secrets.SPLITWISE_ACCESS_TOKEN_SECRET }}" >> $GITHUB_ENV
+        echo "SPLITWISE_USER_ID_BRAM=${{ secrets.SPLITWISE_USER_ID_BRAM }}" >> $GITHUB_ENV
+        echo "BASE_URL=${{ secrets.BASE_URL }}" >> $GITHUB_ENV
+        
+        # Set conditional environment variables based on trigger type
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          # Manual trigger - use TEST values
+          echo "SPLITWISE_USER_ID_ANNE=${{ secrets.SPLITWISE_USER_ID_ANNE_TEST }}" >> $GITHUB_ENV
+          echo "SPLITWISE_GROUP_ID=${{ secrets.SPLITWISE_GROUP_ID_TEST }}" >> $GITHUB_ENV
+        else
+          # Cron trigger - use PROD values
+          echo "SPLITWISE_USER_ID_ANNE=${{ secrets.SPLITWISE_USER_ID_ANNE_PROD }}" >> $GITHUB_ENV
+          echo "SPLITWISE_GROUP_ID=${{ secrets.SPLITWISE_GROUP_ID_PROD }}" >> $GITHUB_ENV
+        fi
+        
+    - name: Run pipeline
+      run: |
+        cd pipeline
+        poetry run python main.py
