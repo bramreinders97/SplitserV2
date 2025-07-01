@@ -152,6 +152,8 @@ def post_balance_to_splitwise(
         group_id, amount, description, ids["creditor_id"], ids["debtor_id"]
     )
 
+    logging.info(f"User IDs: {ids}, group ID: {group_id}")
+
     logging.info(f"Posting expense: {payer} owes €{amount} to {receiver}")
 
     try:
