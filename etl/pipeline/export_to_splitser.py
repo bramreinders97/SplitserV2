@@ -154,13 +154,11 @@ def post_balance_to_splitwise(
 
     logging.info(f"Posting expense: {payer} owes €{amount} to {receiver}")
 
-    try:
-        splitwise.createExpense(expense)
+    _, error = splitwise.createExpense(expense)
+
+    if error:
+        logging.error(f"Splitwise API error: {error.getErrors()}")
+    else:
         logging.info("Expense posted successfully to Splitwise.")
-        return True
-    except SplitwiseException as e:
-        logging.error(f"Splitwise API error: {e}")
-        return False
-    except Exception as e:
-        logging.exception(f"Unexpected error occurred while posting expense: {e}")
-        return False
+
+    return error is not None
