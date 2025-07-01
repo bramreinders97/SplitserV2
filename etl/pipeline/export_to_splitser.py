@@ -158,7 +158,7 @@ def post_balance_to_splitwise(
 
     if error:
         logging.error(f"Splitwise API error: {error.getErrors()}")
-        return False
     else:
         logging.info("Expense posted successfully to Splitwise.")
-        return True
+
+    return error is not None
