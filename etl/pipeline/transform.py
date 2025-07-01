@@ -123,21 +123,12 @@ def _create_description_message(
     bram_should_pay = bram_km * cost_per_km
     anne_should_pay = anne_km * cost_per_km
 
-    bram_balance = balances["Bram"]
-    anne_balance = balances["Anne"]
-
     desc_lines = [
-        f"Export {date.today():%B} {date.today().day}",
-        f"Total kilometers: {total_km}",
-        f"Total expenses: €{round(total_exp, 2)}",
-        f"Cost per km: €{round(cost_per_km, 4)}",
-        f"Bram drove {bram_km} km, should pay €{round(bram_should_pay, 2)}, paid €{round(bram_paid, 2)}, balance €{bram_balance}",
-        f"Anne drove {anne_km} km, should pay €{round(anne_should_pay, 2)}, paid €{round(anne_paid, 2)}, balance €{anne_balance}",
-        (
-            f"Transfer required: {debtor} → {creditor} €{amount}"
-            if amount > 0
-            else "No transfer needed"
-        ),
+        f"Export {date.today():%b} {date.today().day}",
+        f"KM: {round(total_km, 1)}, €: {round(total_exp, 2)}, €/km: {round(cost_per_km, 4)}",
+        f"B: {bram_km}km → €{round(bram_should_pay, 2)} | paid €{round(bram_paid, 2)}",
+        f"A: {anne_km}km → €{round(anne_should_pay, 2)} | paid €{round(anne_paid, 2)}",
+        f"{debtor}→{creditor} €{amount}" if amount > 0 else "No transfer"
     ]
     return "\n".join(desc_lines)
 
