@@ -156,6 +156,7 @@ def post_balance_to_splitwise(
 
     try:
         splitwise.createExpense(expense)
+        print(expense)
         logging.info("Expense posted successfully to Splitwise.")
         return True
     except SplitwiseException as e:
