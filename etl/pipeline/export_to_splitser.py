@@ -161,4 +161,4 @@ def post_balance_to_splitwise(
     else:
         logging.info("Expense posted successfully to Splitwise.")
 
-    return error is not None
+    return error is None
