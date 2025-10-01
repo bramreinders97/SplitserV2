@@ -3,7 +3,7 @@ name: Monthly Export Pipeline
 on:
   schedule:
     # Run at 1 AM UTC on the first day of every month
-    - cron: '0 1 1 * *'
+    - cron: '0 1 2 * *'
   workflow_dispatch:
     # Allow manual triggering
 
