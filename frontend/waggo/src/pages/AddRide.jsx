@@ -19,36 +19,50 @@ export default function AddRide() {
   const [date, setDate] = useState('');
   const [status, setStatus] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus(null);
-
+  const addRideForDriver = async (driverName, rideDistance) => {
     const body = {
-      driver,
-      distance: parseFloat(distance),
+      driver: driverName,
+      distance: rideDistance,
       description,
       date: date,
     };
 
-    try {
-      const res = await fetch(`${API_BASE}/add_ride`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
+    const res = await fetch(`${API_BASE}/add_ride`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
 
-      const result = await res.json();
-      if (res.ok) {
-        setStatus({ type: 'success', message: 'Ride added successfully' });
-        setDistance('');
-        setDate('');
-        setDescription('');
-        setDriver('');
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.error || `Failed to add ride for ${driverName}`);
+    }
+    return result;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus(null);
+
+    try {
+      if (driver === 'Shared ride') {
+        const sharedDistance = Math.round((parseFloat(distance) / 2) * 10) / 10;
+        await Promise.all([
+          addRideForDriver('Anne', sharedDistance),
+          addRideForDriver('Bram', sharedDistance),
+        ]);
+        setStatus({ type: 'success', message: 'Shared ride added successfully' });
       } else {
-        setStatus({ type: 'error', message: result.error || 'Failed to add ride' });
+        await addRideForDriver(driver, parseFloat(distance));
+        setStatus({ type: 'success', message: 'Ride added successfully' });
       }
+
+      setDistance('');
+      setDate('');
+      setDescription('');
+      setDriver('');
     } catch (err) {
-      setStatus({ type: 'error', message: 'Network error' });
+      setStatus({ type: 'error', message: err.message || 'Network error' });
     }
   };
 
@@ -93,6 +107,7 @@ export default function AddRide() {
               </MenuItem>
               <MenuItem value="Anne">Anne</MenuItem>
               <MenuItem value="Bram">Bram</MenuItem>
+              <MenuItem value="Shared ride">Shared ride</MenuItem>
             </TextField>
           </Box>
 
