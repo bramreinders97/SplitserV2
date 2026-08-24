@@ -18,8 +18,8 @@ export default function Header() {
         <Button color="inherit" component={Link} to="/add-expense">
           Add Expense
         </Button>
-        <Button color="inherit" component={Link} to="/unexported">
-          Unexported
+        <Button color="inherit" component={Link} to="/last-10">
+          Last 10
         </Button>
       </Toolbar>
     </AppBar>
