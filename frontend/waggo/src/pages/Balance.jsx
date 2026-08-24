@@ -139,6 +139,11 @@ export default function Balance() {
 
         <SettlementBanner settlement={data.settlement} />
 
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          Expenses are shared in proportion to distance driven. Totals: {km(data.totalKm)},{' '}
+          {euro(data.totalPaid)}.
+        </Typography>
+
         <Grid container spacing={3}>
           {PEOPLE.map((name) => (
             <Grid item xs={12} sm={6} key={name}>
@@ -146,11 +151,6 @@ export default function Balance() {
             </Grid>
           ))}
         </Grid>
-
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 3 }}>
-          Expenses are shared in proportion to distance driven. Totals: {km(data.totalKm)},{' '}
-          {euro(data.totalPaid)}.
-        </Typography>
       </Box>
     </>
   );
