@@ -13,7 +13,10 @@ import {
 import { API_BASE } from '../config';
 import Header from '../components/Header';
 
-function sortData(array, orderBy, order, isNumeric = false) {
+const NUMERIC_KEYS = ['id', 'distance', 'amount'];
+
+function sortData(array, orderBy, order) {
+  const isNumeric = NUMERIC_KEYS.includes(orderBy);
   return [...array].sort((a, b) => {
     const valA = isNumeric ? parseFloat(a[orderBy]) : a[orderBy];
     const valB = isNumeric ? parseFloat(b[orderBy]) : b[orderBy];
@@ -24,7 +27,11 @@ function sortData(array, orderBy, order, isNumeric = false) {
   });
 }
 
-export default function UnexportedData() {
+function lastTenById(data) {
+  return sortData(data, 'id', 'desc').slice(0, 10);
+}
+
+export default function LastTen() {
   const [rides, setRides] = useState([]);
   const [expenses, setExpenses] = useState([]);
 
@@ -34,28 +41,12 @@ export default function UnexportedData() {
   useEffect(() => {
     fetch(`${API_BASE}/all_rides`)
       .then((res) => res.json())
-      .then((data) => setRides(data.filter((r) => r.exported === '0')));
+      .then((data) => setRides(lastTenById(data)));
 
     fetch(`${API_BASE}/all_expenses`)
       .then((res) => res.json())
-      .then((data) => setExpenses(data.filter((e) => e.exported === '0')));
+      .then((data) => setExpenses(lastTenById(data)));
   }, []);
-
-  const totalKm = rides.reduce(
-    (acc, ride) => {
-      acc[ride.driver] = (acc[ride.driver] || 0) + parseFloat(ride.distance);
-      return acc;
-    },
-    { Anne: 0, Bram: 0 }
-  );
-
-  const totalExpenses = expenses.reduce(
-    (acc, exp) => {
-      acc[exp.payer] = (acc[exp.payer] || 0) + parseFloat(exp.amount);
-      return acc;
-    },
-    { Anne: 0, Bram: 0 }
-  );
 
   const handleRideSort = (property) => {
     const isAsc = rideSort.orderBy === property && rideSort.order === 'asc';
@@ -67,15 +58,15 @@ export default function UnexportedData() {
     setExpenseSort({ orderBy: property, order: isAsc ? 'desc' : 'asc' });
   };
 
-  const sortedRides = sortData(rides, rideSort.orderBy, rideSort.order, rideSort.orderBy === 'distance');
-  const sortedExpenses = sortData(expenses, expenseSort.orderBy, expenseSort.order, expenseSort.orderBy === 'amount');
+  const sortedRides = sortData(rides, rideSort.orderBy, rideSort.order);
+  const sortedExpenses = sortData(expenses, expenseSort.orderBy, expenseSort.order);
 
   return (
     <>
       <Header />
       <Box sx={{ padding: '2rem' }}>
         <Typography variant="h4" gutterBottom>
-          Unexported Rides
+          Last 10 Rides
         </Typography>
         <Paper sx={{ mb: 4 }}>
           <Table>
@@ -106,12 +97,9 @@ export default function UnexportedData() {
             </TableBody>
           </Table>
         </Paper>
-        <Typography variant="h6" sx={{ mb: 4 }}>
-          Total KM — Anne: {totalKm.Anne.toFixed(1)} km, Bram: {totalKm.Bram.toFixed(1)} km
-        </Typography>
 
         <Typography variant="h4" gutterBottom>
-          Unexported Expenses
+          Last 10 Expenses
         </Typography>
         <Paper>
           <Table>
@@ -142,9 +130,6 @@ export default function UnexportedData() {
             </TableBody>
           </Table>
         </Paper>
-        <Typography variant="h6" sx={{ mt: 4 }}>
-          Total Expenses — Anne: €{totalExpenses.Anne.toFixed(2)}, Bram: €{totalExpenses.Bram.toFixed(2)}
-        </Typography>
       </Box>
     </>
   );

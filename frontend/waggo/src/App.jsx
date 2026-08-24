@@ -25,8 +25,11 @@ export default function App() {
           <Button variant="contained" component={Link} to="/add-expense">
             Add Expense
           </Button>
-          <Button variant="contained" component={Link} to="/unexported">
-            Show Unexported
+          <Button variant="contained" component={Link} to="/last-10">
+            Show Last 10
+          </Button>
+          <Button variant="contained" component={Link} to="/balance">
+            Show Balance
           </Button>
         </Stack>
       </Paper>
