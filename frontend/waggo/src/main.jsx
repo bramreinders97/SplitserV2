@@ -5,6 +5,7 @@ import App from './App'
 import AddRide from './pages/AddRide'
 import AddExpense from './pages/AddExpense'
 import LastTen from './pages/LastTen';
+import Balance from './pages/Balance';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/add-ride" element={<AddRide />} />
         <Route path="/add-expense" element={<AddExpense />} />
         <Route path="/last-10" element={<LastTen />} />
+        <Route path="/balance" element={<Balance />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

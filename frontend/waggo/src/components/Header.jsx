@@ -21,6 +21,9 @@ export default function Header() {
         <Button color="inherit" component={Link} to="/last-10">
           Last 10
         </Button>
+        <Button color="inherit" component={Link} to="/balance">
+          Balance
+        </Button>
       </Toolbar>
     </AppBar>
   );
